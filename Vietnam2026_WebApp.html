@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vietnam & HK 2026 — Famiglia Donzelli</title>
+<style>
+  :root {
+    --navy: #1B3A6B;
+    --gold: #C9A84C;
+    --white: #FFFFFF;
+    --bg: #F4F6FA;
+    --card: #FFFFFF;
+    --border: #DDE3EE;
+    --text: #2C3E50;
+    --muted: #6B7A8D;
+    --red: #C0392B;
+    --orange: #D35400;
+    --green: #1E7A3E;
+    --blue: #2471A3;
+    --lred: #FADBD8;
+    --lgreen: #D5F5E3;
+    --lorange: #FDEBD0;
+    --lblue: #D6EAF8;
+    --lyellow: #FEF9E7;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(27,58,107,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  /* NAV */
+  nav { background: var(--navy); color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .nav-inner { max-width: 900px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-title { font-weight: 700; font-size: 15px; padding: 14px 0; margin-right: 12px; white-space: nowrap; color: var(--gold); }
+  .nav-btn { background: none; border: none; color: rgba(255,255,255,0.75); padding: 14px 12px; cursor: pointer; font-size: 13px; white-space: nowrap; border-bottom: 3px solid transparent; transition: all .2s; }
+  .nav-btn:hover { color: white; }
+  .nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 600; }
+
+  /* LAYOUT */
+  .page { display: none; max-width: 900px; margin: 0 auto; padding: 20px 16px 80px; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+  .card-header { padding: 14px 18px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .card-body { padding: 16px 18px; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, var(--navy) 0%, #2C5282 100%); color: white; border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .hero h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .hero p { color: rgba(255,255,255,0.8); font-size: 13px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .hero-stat { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px; text-align: center; }
+  .hero-stat .val { font-size: 26px; font-weight: 800; color: var(--gold); line-height: 1; }
+  .hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+  /* COUNTDOWN */
+  .countdown-bar { background: var(--card); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .cdb-label { font-weight: 700; font-size: 13px; color: var(--muted); }
+  .cdb-days { font-size: 32px; font-weight: 900; color: var(--navy); line-height: 1; }
+  .cdb-sub { font-size: 12px; color: var(--muted); }
+  .cdb-progress { flex: 1; min-width: 150px; }
+  .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--navy), var(--gold)); border-radius: 4px; transition: width .5s; }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-red { background: var(--lred); color: var(--red); }
+  .badge-green { background: var(--lgreen); color: var(--green); }
+  .badge-orange { background: var(--lorange); color: var(--orange); }
+  .badge-blue { background: var(--lblue); color: var(--blue); }
+  .badge-navy { background: var(--navy); color: white; }
+
+  /* DEADLINE LIST */
+  .deadline-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .deadline-item:last-child { border-bottom: none; }
+  .dl-days { min-width: 56px; text-align: center; }
+  .dl-days .n { font-size: 22px; font-weight: 800; line-height: 1; }
+  .dl-days .g { font-size: 10px; color: var(--muted); }
+  .dl-info .label { font-weight: 600; font-size: 13px; }
+  .dl-info .note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* DAY NAV */
+  .day-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .day-nav-btn { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--navy); transition: all .2s; }
+  .day-nav-btn:hover { background: var(--navy); color: white; }
+  .day-select-wrap { flex: 1; }
+  .day-select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--navy); background: var(--card); cursor: pointer; }
+
+  /* DAY STAGES MINI MAP */
+  .stages-strip { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stage-pill { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; border: 2px solid transparent; transition: all .2s; }
+  .stage-pill.active { border-color: var(--navy); transform: scale(1.05); }
+  .stage-pill:hover { opacity: .85; }
+
+  /* DAY CARD */
+  .day-hero { border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .day-hero h2 { font-size: 20px; font-weight: 800; }
+  .day-hero .stage { font-size: 13px; opacity: .75; margin-top: 2px; }
+  .type-flight { background: linear-gradient(135deg, #D6EAF8, #AED6F1); }
+  .type-hotel { background: linear-gradient(135deg, #D5F5E3, #A9DFBF); }
+  .type-transfer { background: linear-gradient(135deg, #FDEBD0, #FAD7A0); }
+
+  /* INFO GRID */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media(max-width:500px) { .info-grid { grid-template-columns: 1fr; } }
+  .info-box { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .info-box h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 8px; }
+  .info-box .main { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .info-box .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .info-box .highlight { font-size: 13px; font-weight: 700; color: var(--red); }
+  .info-box a { color: var(--blue); text-decoration: none; }
+  .info-box a:hover { text-decoration: underline; }
+
+  /* FLIGHT ROW */
+  .flight-row { background: var(--lblue); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+  .flight-code { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .flight-route { font-size: 13px; font-weight: 600; margin: 2px 0; }
+  .flight-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+  .flight-meta span { font-size: 12px; color: var(--muted); }
+  .flight-meta span strong { color: var(--text); }
+  .time-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+  .time-dep, .time-arr { font-size: 20px; font-weight: 900; color: var(--navy); }
+  .time-arrow { color: var(--muted); font-size: 16px; }
+
+  /* TRANSFER ROW */
+  .transfer-row { background: var(--lorange); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+  .transfer-row.critical { background: var(--lred); border-left: 4px solid var(--red); }
+  .transfer-status { font-size: 12px; font-weight: 700; }
+
+  /* HOTEL BOX */
+  .hotel-box { background: var(--lgreen); border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+  .hotel-box.cash { background: var(--lyellow); border-left: 4px solid var(--orange); }
+  .hotel-name { font-size: 16px; font-weight: 800; color: var(--navy); }
+  .hotel-conf { font-size: 13px; font-weight: 600; margin-top: 6px; }
+  .hotel-pin { font-size: 20px; font-weight: 900; color: var(--red); letter-spacing: 2px; }
+  .hotel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  @media(max-width:420px) { .hotel-grid { grid-template-columns: 1fr; } }
+  .hotel-item { font-size: 12px; }
+  .hotel-item .k { color: var(--muted); }
+  .hotel-item .v { font-weight: 600; }
+
+  /* NOTES BOX */
+  .notes-box { background: var(--lyellow); border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 13px; line-height: 1.6; margin-bottom: 12px; }
+
+  /* ACTIVITIES */
+  .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .activity-check.done { background: var(--green); border-color: var(--green); color: white; }
+  .activity-info { flex: 1; }
+  .activity-name { font-weight: 600; font-size: 13px; }
+  .activity-name.done { text-decoration: line-through; color: var(--muted); }
+  .activity-meta { font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .activity-cost { font-size: 12px; font-weight: 700; color: var(--green); }
+  .activity-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; }
+  .activity-del:hover { color: var(--red); background: var(--lred); }
+
+  /* ADD ACTIVITY FORM */
+  .add-form { background: var(--bg); border-radius: 8px; padding: 14px; margin-top: 10px; }
+  .add-form-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .add-form input, .add-form select, .add-form textarea { flex: 1; min-width: 120px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; background: white; font-family: inherit; }
+  .add-form textarea { width: 100%; min-height: 50px; resize: vertical; }
+  .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all .2s; }
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover { background: #2C5282; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+
+  /* EXPENSES */
+  .expense-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .expense-item:last-child { border-bottom: none; }
+  .expense-cat { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .expense-info { flex: 1; }
+  .expense-desc { font-weight: 600; font-size: 13px; }
+  .expense-meta { font-size: 11px; color: var(--muted); }
+  .expense-amount { font-weight: 700; font-size: 15px; }
+  .expense-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; }
+  .expense-del:hover { color: var(--red); }
+
+  /* TOTALS */
+  .total-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .total-row:last-child { border-bottom: none; }
+  .total-row.grand { font-weight: 800; font-size: 16px; color: var(--navy); border-top: 2px solid var(--navy); margin-top: 4px; padding-top: 10px; }
+
+  /* CONTACTS */
+  .contact-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-icon { width: 36px; height: 36px; background: var(--lblue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .contact-info { flex: 1; }
+  .contact-name { font-weight: 700; font-size: 13px; }
+  .contact-phone { font-size: 14px; font-weight: 600; color: var(--blue); }
+  .contact-ref { font-size: 11px; color: var(--muted); }
+  .call-btn { background: var(--lgreen); color: var(--green); border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+
+  /* OVERVIEW TIMELINE */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 16px; }
+  .tl-dot { position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; }
+  .tl-dot.flight { background: var(--blue); }
+  .tl-dot.hotel { background: var(--green); }
+  .tl-dot.transfer { background: var(--orange); }
+  .tl-card { background: var(--card); border-radius: 8px; padding: 10px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); cursor: pointer; transition: all .2s; border-left: 3px solid transparent; }
+  .tl-card:hover { box-shadow: var(--shadow); transform: translateX(2px); }
+  .tl-card.flight { border-left-color: var(--blue); }
+  .tl-card.hotel { border-left-color: var(--green); }
+  .tl-card.transfer { border-left-color: var(--orange); }
+  .tl-date { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .tl-stage { font-size: 14px; font-weight: 700; }
+  .tl-sub { font-size: 12px; color: var(--muted); }
+
+  /* TOGGLE */
+  .toggle-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+  .toggle-btn:hover { color: var(--navy); border-color: var(--navy); }
+  .collapsible { display: none; }
+  .collapsible.open { display: block; }
+
+  /* SECTION TITLE */
+  .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin: 16px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 24px; color: var(--muted); font-size: 13px; }
+  .empty .icon { font-size: 32px; margin-bottom: 8px; }
+
+  /* EXPENSE CATEGORIES */
+  .cat-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cat-btn { padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); font-size: 11px; cursor: pointer; background: white; transition: all .2s; }
+  .cat-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--navy); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  /* PRINT */
+  @media print {
+    nav, .day-nav, .stages-strip, .add-form, .btn { display: none !important; }
+    .page { display: block !important; max-width: 100%; padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-title">🇻🇳 VN & HK 2026</div>
+    <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
+    <button class="nav-btn" onclick="showPage('overview')">🗺 Overview</button>
+    <button class="nav-btn" onclick="showPage('day')">📅 Giorno</button>
+    <button class="nav-btn" onclick="showPage('expenses')">💰 Spese</button>
+    <button class="nav-btn" onclick="showPage('contacts')">📞 Contatti</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════ HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>🇻🇳 Vietnam & Hong Kong 2026</h1>
+    <p>Famiglia Donzelli · Axel · Alma · Irene · Beatrice</p>
+    <div class="hero-grid">
+      <div class="hero-stat"><div class="val" id="h-days-to">—</div><div class="lbl">giorni alla partenza</div></div>
+      <div class="hero-stat"><div class="val">21</div><div class="lbl">giorni di viaggio</div></div>
+      <div class="hero-stat"><div class="val">7</div><div class="lbl">tappe</div></div>
+    </div>
+  </div>
+
+  <!-- countdown partenza -->
+  <div class="countdown-bar">
+    <div>
+      <div class="cdb-label">PARTENZA</div>
+      <div class="cdb-days" id="cd-days">—</div>
+      <div class="cdb-sub">6 agosto 2026 · MXP → Hanoi</div>
+    </div>
+    <div class="cdb-progress">
+      <div style="font-size:11px;color:var(--muted)">Progresso pianificazione</div>
+      <div class="progress-bar"><div class="progress-fill" id="plan-progress" style="width:0%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px" id="plan-pct">—</div>
+    </div>
+  </div>
+
+  <!-- deadlines -->
+  <div class="card">
+    <div class="card-header" style="background:var(--navy);color:white">⚠️ Deadline Critiche</div>
+    <div class="card-body" id="deadlines-list"></div>
+  </div>
+
+  <!-- riepilogo costi fissi -->
+  <div class="card">
+    <div class="card-header" style="background:var(--navy);color:white">💰 Costi Confermati (Famiglia)</div>
+    <div class="card-body">
+      <div class="total-row"><span>Voli Qatar Airways (x4)</span><span>€ 5.475,27</span></div>
+      <div class="total-row"><span>VN173 Hanoi→Da Nang (x4)</span><span>€ 313,33</span></div>
+      <div class="total-row"><span>VN123 Da Nang→HCMC (x4)</span><span>€ 313,33</span></div>
+      <div class="total-row"><span>VN594 HCMC→Hong Kong (x4)</span><span>€ 384,76</span></div>
+      <div class="total-row"><span>Hanoi — Dalvostro H&S (2 notti)</span><span>€ 165,00</span></div>
+      <div class="total-row"><span>Sa Pa — Jungle Homestay (2 notti)</span><span>€ 79,00</span></div>
+      <div class="total-row"><span>Yên Bái — Dinh Gia Trang (1 notte)</span><span>€ 51,00</span></div>
+      <div class="total-row"><span>Ninh Bình — Trang An Ecolodge (3 notti)</span><span>€ 199,00</span></div>
+      <div class="total-row"><span>Da Nang — Mai's Boutique (3 notti)</span><span>€ 272,00</span></div>
+      <div class="total-row"><span>Ho Chi Minh — NU Home (3 notti)</span><span>€ 196,00</span></div>
+      <div class="total-row" style="color:var(--orange)"><span>⚠️ Hong Kong — da definire (5 notti)</span><span>€ 1.040 / € 499</span></div>
+      <div class="total-row grand"><span>TOTALE FISSO (con Royal Plaza)</span><span id="fixed-total">€ 8.488,69</span></div>
+      <div class="total-row grand" style="color:var(--green)"><span>+ Spese di viaggio</span><span id="live-expenses-home">€ 0,00</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ OVERVIEW -->
+<div id="page-overview" class="page">
+  <div style="margin-bottom:16px">
+    <h2 style="font-size:20px;font-weight:800;color:var(--navy)">🗺 Overview Viaggio</h2>
+    <p style="color:var(--muted);font-size:13px">Clicca su una tappa per vedere i dettagli</p>
+  </div>
+
+  <div class="stages-strip" id="stage-filters"></div>
+
+  <div class="card">
+    <div class="card-body" style="padding:12px">
+      <div class="timeline" id="timeline-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ GIORNO -->
+<div id="page-day" class="page">
+  <div class="day-nav">
+    <button class="day-nav-btn" onclick="prevDay()">← Prec</button>
+    <div class="day-select-wrap">
+      <select class="day-select" id="day-selector" onchange="selectDay(this.value)"></select>
+    </div>
+    <button class="day-nav-btn" onclick="nextDay()">Succ →</button>
+  </div>
+  <div id="day-content"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ SPESE -->
+<div id="page-expenses" class="page">
+  <div style="margin-bottom:16px">
+    <h2 style="font-size:20px;font-weight:800;color:var(--navy)">💰 Spese di Viaggio</h2>
+    <p style="color:var(--muted);font-size:13px">Aggiungi le spese in tempo reale durante il viaggio</p>
+  </div>
+
+  <!-- Aggiungi spesa -->
+  <div class="card">
+    <div class="card-header" style="background:var(--navy);color:white">➕ Aggiungi Spesa</div>
+    <div class="card-body">
+      <div class="add-form" style="background:white;padding:0;margin:0">
+        <div class="add-form-row">
+          <select id="exp-cat" style="flex:0 0 auto;width:auto">
+            <option value="🍽️">🍽️ Ristorante</option>
+            <option value="🛺">🛺 Trasporto</option>
+            <option value="🎟️">🎟️ Attività</option>
+            <option value="🛍️">🛍️ Shopping</option>
+            <option value="🏨">🏨 Hotel</option>
+            <option value="💊">💊 Farmacia</option>
+            <option value="📦">📦 Altro</option>
+          </select>
+          <input id="exp-desc" type="text" placeholder="Descrizione..." style="flex:2">
+          <input id="exp-amount" type="number" placeholder="€" step="0.01" min="0" style="flex:0 0 80px">
+        </div>
+        <div class="add-form-row">
+          <select id="exp-day" style="flex:1"></select>
+          <button class="btn btn-primary" onclick="addExpense()">Aggiungi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtri -->
+  <div class="cat-filter" id="exp-cat-filter">
+    <button class="cat-btn active" onclick="filterExpenses('all',this)">Tutto</button>
+    <button class="cat-btn" onclick="filterExpenses('🍽️',this)">🍽️ Cibo</button>
+    <button class="cat-btn" onclick="filterExpenses('🛺',this)">🛺 Trasporto</button>
+    <button class="cat-btn" onclick="filterExpenses('🎟️',this)">🎟️ Attività</button>
+    <button class="cat-btn" onclick="filterExpenses('🛍️',this)">🛍️ Shopping</button>
+    <button class="cat-btn" onclick="filterExpenses('📦',this)">📦 Altro</button>
+  </div>
+
+  <!-- Lista spese -->
+  <div class="card">
+    <div class="card-body" id="expenses-list">
+      <div class="empty"><div class="icon">💸</div>Nessuna spesa ancora. Aggiungile durante il viaggio!</div>
+    </div>
+  </div>
+
+  <!-- Totali -->
+  <div class="card">
+    <div class="card-header" style="background:var(--navy);color:white">📊 Riepilogo Spese</div>
+    <div class="card-body" id="expenses-summary"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ CONTATTI -->
+<div id="page-contacts" class="page">
+  <div style="margin-bottom:16px">
+    <h2 style="font-size:20px;font-weight:800;color:var(--navy)">📞 Contatti & Emergenze</h2>
+  </div>
+  <div class="card">
+    <div class="card-body" id="contacts-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const TRIP = {
+  meta: { departureDate: "2026-08-06", returnDate: "2026-08-27" },
+  deadlines: [
+    { label: "Cancellazione Sapa Jungle Homestay", date: "2026-08-01", note: "Conf: 5663.254.905", urgent: true },
+    { label: "Cancellazione Dalvostro Hanoi", date: "2026-08-03", note: "Conf: 6632.863.799", urgent: true },
+    { label: "Cancellazione Dinh Gia Trang", date: "2026-08-09", note: "Conf: 6297.501.305", urgent: true },
+    { label: "Cancellazione Trang An Ecolodge", date: "2026-08-12", note: "Conf: 6425.344.855", urgent: false },
+    { label: "Cancellazione Mai's Boutique", date: "2026-08-15", note: "Conf: 6592.117.618", urgent: false },
+    { label: "Cancellazione NU Home HCMC", date: "2026-08-16", note: "Conf: 5180.650.713", urgent: false },
+    { label: "⚠️ Doppione HK — cancellare uno", date: "2026-08-18", note: "Royal Plaza Conf: 5013.126.537", urgent: true },
+  ],
+  contacts: [
+    { name: "Qatar Airways", phone: "+390230578845", display: "+39 02 3057 8845", ref: "Ref: 8UF3WJ", note: "Modifiche voli QR", icon: "✈️" },
+    { name: "Vietnam Airlines", phone: "+842438320320", display: "+84 24 38320320", ref: "Ref: DJIA7T / DJSSHP / EZG8U9", note: "1900 1100 da VN", icon: "✈️" },
+    { name: "Dalvostro Hanoi", phone: "+84945605252", display: "+84 945 605 252", ref: "Conf: 6632.863.799 · PIN: 4038", note: "Early check-in richiesto", icon: "🏨" },
+    { name: "Sapa Jungle Homestay", phone: "+84387811699", display: "+84 387 811 699", ref: "Conf: 5663.254.905 · PIN: 4335", note: "Comunicare orario arrivo", icon: "🏡" },
+    { name: "Dinh Gia Trang", phone: "+84977722578", display: "+84 977 722 578", ref: "Conf: 6297.501.305 · PIN: 3372", note: "Check-in chiude 20:00 · Solo contanti", icon: "🏡" },
+    { name: "Trang An Ecolodge", phone: "+84983814123", display: "+84 983 814 123", ref: "Conf: 6425.344.855 · PIN: 9908", note: "Solo contanti", icon: "🏡" },
+    { name: "Mai's Boutique", phone: "+84862298125", display: "+84 862 298 125", ref: "Conf: 6592.117.618 · PIN: 4288", note: "Richiedere early check-out", icon: "🏨" },
+    { name: "NU Home HCMC", phone: "+84794576438", display: "+84 794 576 438", ref: "Conf: 5180.650.713 · PIN: 5025", note: "Appartamento 2 camere", icon: "🏠" },
+    { name: "Royal Plaza HK", phone: "+85226226111", display: "+852 2622 6111", ref: "Conf: 5013.126.537 · PIN: 8019", note: "Doppione — verificare", icon: "🏨" },
+    { name: "Emergenze Vietnam", phone: "113", display: "113 / 114 / 115", ref: "Polizia / VVF / Ambulanza", note: "", icon: "🚨" },
+    { name: "Emergenze Hong Kong", phone: "999", display: "999", ref: "Polizia / Ambulanza / VVF", note: "", icon: "🚨" },
+    { name: "Ambasciata Italiana Hanoi", phone: "+842438235781", display: "+84 24 3823 5781", ref: "Via Tran Hung Dao", note: "", icon: "🇮🇹" },
+  ],
+  stages: [
+    { name: "Hanoi", days: [2,3], color: "#E8F4F8", bg: "#2471A3" },
+    { name: "Sa Pa", days: [4,5], color: "#E8F8E8", bg: "#1E7A3E" },
+    { name: "Yên Bái", days: [6], color: "#F0F8E8", bg: "#27AE60" },
+    { name: "Ninh Bình", days: [7,8,9], color: "#FFF8E8", bg: "#D35400" },
+    { name: "Da Nang", days: [10,11,12], color: "#F8E8F8", bg: "#8E44AD" },
+    { name: "Ho Chi Minh", days: [13,14,15], color: "#FFE8E8", bg: "#C0392B" },
+    { name: "Hong Kong", days: [16,17,18,19,20], color: "#E8E8FF", bg: "#1B3A6B" },
+  ],
+  days: [
+    { id:1, date:"2026-08-06", dayLabel:"Gio 6 ago", stage:"Milano → Hanoi", type:"flight",
+      hotel:null,
+      flights:[
+        { code:"QR124", route:"MXP T1 → DOH", dep:"09:40", arr:"16:25", ref:"8UF3WJ", baggage:"30kg/pax", seats:"22A·22B·22C·22D (fila completa)" },
+        { code:"QR982", route:"DOH → HAN T2", dep:"20:05", arr:"07:15+1", ref:"8UF3WJ", baggage:"30kg/pax", seats:"17F·17H·17J·17K ⚠️ verificare contigüità" }
+      ],
+      transfers:[], notes:"Arrivare MXP T1 entro le 07:00. Check-in online apre 48h prima. Scalo Doha ~3h40.", activities:[] },
+
+    { id:2, date:"2026-08-07", dayLabel:"Ven 7 ago", stage:"Hanoi", type:"hotel",
+      hotel:{ name:"Hanoi Dalvostro Valentino H&S", conf:"6632.863.799", pin:"4038", phone:"+84 945 605 252", checkin:"from 14:00 (early req. ~07:00)", checkout:"Dom 9 ago · until 12:00", address:"12 Bao Khanh Lane, Hoan Kiem", payment:"Carte / VND", breakfast:true, cashOnly:false },
+      flights:[], transfers:[], notes:"Arrivo ~07:15 da T2. Early check-in già richiesto. 🍳 COLAZIONE INCLUSA. Riposo, jet lag. Sera: Hoan Kiem Lake.", activities:[] },
+
+    { id:3, date:"2026-08-08", dayLabel:"Sab 8 ago", stage:"Hanoi", type:"hotel",
+      hotel:{ name:"Hanoi Dalvostro Valentino H&S", conf:"6632.863.799", pin:"4038", phone:"+84 945 605 252", checkin:"—", checkout:"Dom 9 ago · until 12:00", address:"12 Bao Khanh Lane, Hoan Kiem", payment:"Carte / VND", breakfast:true, cashOnly:false },
+      flights:[], transfers:[], notes:"🍳 COLAZIONE INCLUSA. Tempio della Letteratura, Mausoleo Ho Chi Minh, Hoan Kiem Lake.", activities:[] },
+
+    { id:4, date:"2026-08-09", dayLabel:"Dom 9 ago", stage:"Hanoi → Sa Pa", type:"transfer",
+      hotel:{ name:"Sapa Jungle Homestay", conf:"5663.254.905", pin:"4335", phone:"+84 387 811 699", checkin:"from 13:00", checkout:"Mar 11 ago · 06:00-11:00", address:"534 Đường Điện Biên Phủ, Sa Pa", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[],
+      transfers:[{ from:"Hanoi (Dalvostro Hotel)", to:"Sa Pa (Jungle Homestay)", duration:"5-6h", how:"12go.asia OPPURE ecosapa.net — van privato 7 posti", cost:"€130-155", driver:"", phone:"", plate:"", status:"⚠️ DA PRENOTARE", critical:false }],
+      notes:"Stop panoramico Passo O Quy Ho. Comunicare orario arrivo all'homestay. Bungalow 2 camere da letto.", activities:[] },
+
+    { id:5, date:"2026-08-10", dayLabel:"Lun 10 ago", stage:"Sa Pa", type:"hotel",
+      hotel:{ name:"Sapa Jungle Homestay", conf:"5663.254.905", pin:"4335", phone:"+84 387 811 699", checkin:"—", checkout:"Mar 11 ago · 06:00-11:00", address:"534 Đường Điện Biên Phủ, Sa Pa", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Trekking Muong Hoa Valley. Villaggi H'Mong. Guide locali tramite homestay. Scarpe da trekking.", activities:[] },
+
+    { id:6, date:"2026-08-11", dayLabel:"Mar 11 ago", stage:"Sa Pa → Yên Bái", type:"transfer",
+      hotel:{ name:"Dinh Gia Trang Homestay & Coffee", conf:"6297.501.305", pin:"3372", phone:"+84 977 722 578", checkin:"15:00-20:00 ⚠️", checkout:"Mer 12 ago · 07:00-12:00", address:"81 Ngô Minh Loan, Yên Bái", payment:"⚠️ SOLO CONTANTI", breakfast:false, cashOnly:true },
+      flights:[],
+      transfers:[{ from:"Sa Pa (Jungle Homestay)", to:"Yên Bái (Dinh Gia Trang)", duration:"~3,5h", how:"Chiedere a Sapa Jungle Homestay referral driver — non su 12go", cost:"€55-75", driver:"", phone:"", plate:"", status:"⚠️ DA PRENOTARE", critical:false }],
+      notes:"⚠️ Check-in CHIUDE 20:00 — avvisare homestay dell'orario. SOLO CONTANTI. Camera King con Balcone.", activities:[] },
+
+    { id:7, date:"2026-08-12", dayLabel:"Mer 12 ago", stage:"Yên Bái → Ninh Bình", type:"transfer",
+      hotel:{ name:"Trang An Ecolodge", conf:"6425.344.855", pin:"9908", phone:"+84 983 814 123", checkin:"from 14:00", checkout:"Sab 15 ago · until 12:00", address:"Tràng An xã Trường Yên, Ninh Bình", payment:"⚠️ SOLO CONTANTI", breakfast:false, cashOnly:true },
+      flights:[],
+      transfers:[{ from:"Yên Bái (Dinh Gia Trang)", to:"Ninh Bình (Trang An Ecolodge)", duration:"~4h", how:"Dinh Gia Trang (+84 977 722 578) — negoziare stesso driver del giorno prima", cost:"€65-80", driver:"", phone:"", plate:"", status:"⚠️ DA PRENOTARE", critical:false }],
+      notes:"Suite Familiare Deluxe. SOLO CONTANTI. Conferma scritta WhatsApp con nome driver e targa.", activities:[] },
+
+    { id:8, date:"2026-08-13", dayLabel:"Gio 13 ago", stage:"Ninh Bình", type:"hotel",
+      hotel:{ name:"Trang An Ecolodge", conf:"6425.344.855", pin:"9908", phone:"+84 983 814 123", checkin:"—", checkout:"Sab 15 ago · until 12:00", address:"Tràng An xã Trường Yên, Ninh Bình", payment:"⚠️ SOLO CONTANTI", breakfast:false, cashOnly:true },
+      flights:[], transfers:[], notes:"Barca Tràng An (UNESCO) — prenotare al mattino presto. Hoa Lư ancient capital. Bich Dong Pagoda.", activities:[] },
+
+    { id:9, date:"2026-08-14", dayLabel:"Ven 14 ago", stage:"Ninh Bình", type:"hotel",
+      hotel:{ name:"Trang An Ecolodge", conf:"6425.344.855", pin:"9908", phone:"+84 983 814 123", checkin:"—", checkout:"Sab 15 ago · until 12:00", address:"Tràng An xã Trường Yên, Ninh Bình", payment:"⚠️ SOLO CONTANTI", breakfast:false, cashOnly:true },
+      flights:[], transfers:[], notes:"Mua Cave & Hang Mua (vista panoramica). ⏰ SERA: preparare bagagli. Sveglia anticipata domani — VAN ORE 09:30.", activities:[] },
+
+    { id:10, date:"2026-08-15", dayLabel:"Sab 15 ago", stage:"Ninh Bình → Hanoi → Da Nang", type:"transfer",
+      hotel:{ name:"Mai's Boutique", conf:"6592.117.618", pin:"4288", phone:"+84 862 298 125", checkin:"from 14:00", checkout:"Mar 18 ago · until 12:00", address:"104 Tô Hiến Thành, Quận Sơn Trà, Da Nang", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[{ code:"VN173", route:"HAN T1 → DAD T1", dep:"14:35", arr:"16:00", ref:"DJIA7T", baggage:"1PC/pax", seats:"DA SELEZIONARE ⚠️" }],
+      transfers:[{ from:"Trang An Ecolodge", to:"Aeroporto Noi Bai T1", duration:"~2,5h", how:"GetYourGuide: 'Ninh Binh to Noi Bai Airport'", cost:"€40-60", driver:"", phone:"", plate:"", status:"🔴 DA PRENOTARE", critical:true }],
+      notes:"🔴 VAN MAX 09:30 DA TRANG AN. Check-in VN173 chiude 13:05. Volo 14:35. Appartamento Vista Giardino a Da Nang.", activities:[] },
+
+    { id:11, date:"2026-08-16", dayLabel:"Dom 16 ago", stage:"Da Nang", type:"hotel",
+      hotel:{ name:"Mai's Boutique", conf:"6592.117.618", pin:"4288", phone:"+84 862 298 125", checkin:"—", checkout:"Mar 18 ago · until 12:00", address:"104 Tô Hiến Thành, Quận Sơn Trà, Da Nang", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Marble Mountains, My Khe Beach. Hoi An a 30 min (taxi ~$10). Golden Bridge / Ba Na Hills.", activities:[] },
+
+    { id:12, date:"2026-08-17", dayLabel:"Lun 17 ago", stage:"Da Nang", type:"hotel",
+      hotel:{ name:"Mai's Boutique", conf:"6592.117.618", pin:"4288", phone:"+84 862 298 125", checkin:"—", checkout:"Mar 18 ago · until 12:00", address:"104 Tô Hiến Thành, Quận Sơn Trà, Da Nang", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Escursione Hoi An (consigliata). Noleggio bici ~$2/giorno. Lanterne sul fiume Thu Bon.", activities:[] },
+
+    { id:13, date:"2026-08-18", dayLabel:"Mar 18 ago", stage:"Da Nang → Ho Chi Minh", type:"transfer",
+      hotel:{ name:"NU Home Private Pool", conf:"5180.650.713", pin:"5025", phone:"+84 794 576 438", checkin:"15:00-23:00", checkout:"Ven 21 ago · 11:00-12:00", address:"137/34 Đường Trần Đình Xu, Distretto 1, HCMC", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[{ code:"VN123", route:"DAD T1 → SGN T3", dep:"11:55", arr:"13:30", ref:"DJSSHP", baggage:"1PC/pax", seats:"DA SELEZIONARE ⚠️" }],
+      transfers:[], notes:"⚠️ CHECK-OUT ANTICIPATO richiesto a Mai's Boutique (~09:30). VN123 parte 11:55. Appartamento 2 camere, piscina privata.", activities:[] },
+
+    { id:14, date:"2026-08-19", dayLabel:"Mer 19 ago", stage:"Ho Chi Minh City", type:"hotel",
+      hotel:{ name:"NU Home Private Pool", conf:"5180.650.713", pin:"5025", phone:"+84 794 576 438", checkin:"—", checkout:"Ven 21 ago · 11:00-12:00", address:"137/34 Đường Trần Đình Xu, Distretto 1, HCMC", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Ben Thanh Market, Palazzo Riunificazione, Notre-Dame Cathedral, War Remnants Museum.", activities:[] },
+
+    { id:15, date:"2026-08-20", dayLabel:"Gio 20 ago", stage:"Ho Chi Minh City", type:"hotel",
+      hotel:{ name:"NU Home Private Pool", conf:"5180.650.713", pin:"5025", phone:"+84 794 576 438", checkin:"—", checkout:"Ven 21 ago · 11:00-12:00", address:"137/34 Đường Trần Đình Xu, Distretto 1, HCMC", payment:"Carte / VND", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Cu Chi Tunnels day trip (prenotare). Mekong Delta alternativa. Piscina privata.", activities:[] },
+
+    { id:16, date:"2026-08-21", dayLabel:"Ven 21 ago", stage:"Ho Chi Minh → Hong Kong", type:"transfer",
+      hotel:{ name:"Royal Plaza Hotel ⚠️ (doppione)", conf:"5013.126.537", pin:"8019", phone:"+852 2622 6111", checkin:"15:00-00:00", checkout:"Mer 26 ago · 07:00-11:00", address:"193 Prince Edward Road West, Mong Kok, HK", payment:"Carte / HKD", breakfast:false, cashOnly:false },
+      flights:[{ code:"VN594", route:"SGN T2 → HKG T1", dep:"13:45", arr:"17:25", ref:"EZG8U9", baggage:"1PC/pax", seats:"Axel 30D · Alma 30A ⚠️ · Irene 30B · Beatrice 30C" }],
+      transfers:[], notes:"⚠️ DOPPIONE HK: verificare quale hotel è confermato. Alma posto 30A separata dagli altri.", activities:[] },
+
+    { id:17, date:"2026-08-22", dayLabel:"Sab 22 ago", stage:"Hong Kong", type:"hotel",
+      hotel:{ name:"Royal Plaza Hotel (da confermare)", conf:"5013.126.537", pin:"8019", phone:"+852 2622 6111", checkin:"—", checkout:"Mer 26 ago · 07:00-11:00", address:"193 Prince Edward Road West, Mong Kok, HK", payment:"Carte / HKD", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Victoria Peak tramway. Star Ferry. Temple Street Night Market. Dim sum.", activities:[] },
+
+    { id:18, date:"2026-08-23", dayLabel:"Dom 23 ago", stage:"Hong Kong", type:"hotel",
+      hotel:{ name:"Royal Plaza Hotel (da confermare)", conf:"5013.126.537", pin:"8019", phone:"+852 2622 6111", checkin:"—", checkout:"Mer 26 ago · 07:00-11:00", address:"193 Prince Edward Road West, Mong Kok, HK", payment:"Carte / HKD", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Lantau Island: Tian Tan Buddha (Big Buddha) + Ngong Ping 360. Con bambini: Ocean Park.", activities:[] },
+
+    { id:19, date:"2026-08-24", dayLabel:"Lun 24 ago", stage:"Hong Kong", type:"hotel",
+      hotel:{ name:"Royal Plaza Hotel (da confermare)", conf:"5013.126.537", pin:"8019", phone:"+852 2622 6111", checkin:"—", checkout:"Mer 26 ago · 07:00-11:00", address:"193 Prince Edward Road West, Mong Kok, HK", payment:"Carte / HKD", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Kowloon: Tsim Sha Tsui promenade, Mongkok Markets, Ladies Market.", activities:[] },
+
+    { id:20, date:"2026-08-25", dayLabel:"Mar 25 ago", stage:"Hong Kong", type:"hotel",
+      hotel:{ name:"Royal Plaza Hotel (da confermare)", conf:"5013.126.537", pin:"8019", phone:"+852 2622 6111", checkin:"—", checkout:"Mer 26 ago · 07:00-11:00", address:"193 Prince Edward Road West, Mong Kok, HK", payment:"Carte / HKD", breakfast:false, cashOnly:false },
+      flights:[], transfers:[], notes:"Stanley Market, Repulse Bay. Ultima sera: cena vista porto.", activities:[] },
+
+    { id:21, date:"2026-08-26", dayLabel:"Mer 26 ago", stage:"Hong Kong → Milano", type:"flight",
+      hotel:null,
+      flights:[
+        { code:"QR817", route:"HKG T1 → DOH", dep:"19:40", arr:"22:50", ref:"8UF3WJ", baggage:"30kg/pax", seats:"Axel 40D · Alma 40F · Irene 40E · Beatrice 40G" },
+        { code:"QR123", route:"DOH → MXP T1", dep:"02:00+1", arr:"07:10+1", ref:"8UF3WJ", baggage:"30kg/pax", seats:"Axel 23A · Alma 23C · Irene 23B · Beatrice 23D" }
+      ],
+      transfers:[], notes:"Arrivare HKG T1 entro le 17:00. Arrivo MXP T1 ore 07:10 del 27 agosto.", activities:[] },
+  ]
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let state = {
+  currentDay: 1,
+  activities: {},  // { dayId: [{id, name, note, cost, date, done}] }
+  expenses: [],    // [{id, cat, desc, amount, dayId, ts}]
+  expenseFilter: 'all',
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('vn2026_state');
+    if (s) {
+      const parsed = JSON.parse(s);
+      state.activities = parsed.activities || {};
+      state.expenses = parsed.expenses || [];
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('vn2026_state', JSON.stringify({
+      activities: state.activities,
+      expenses: state.expenses,
+    }));
+  } catch(e) {}
+}
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function daysUntil(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(dateStr); target.setHours(0,0,0,0);
+  return Math.ceil((target - today) / 86400000);
+}
+
+function fmt(n) { return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n); }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ── NAV ──────────────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event && event.target && event.target.classList.add('active');
+  if(id==='day') renderDay(state.currentDay);
+  if(id==='overview') renderOverview();
+  if(id==='expenses') renderExpenses();
+  if(id==='contacts') renderContacts();
+  if(id==='home') renderHome();
+}
+
+// ── HOME ─────────────────────────────────────────────────────────────────────
+function renderHome() {
+  const d = daysUntil(TRIP.meta.departureDate);
+  document.getElementById('h-days-to').textContent = Math.max(0,d);
+  document.getElementById('cd-days').textContent = d > 0 ? d : 'Siete in viaggio!';
+
+  // Planning progress (count non-empty transfer drivers)
+  const totalActions = 4; // 4 transfers to book
+  document.getElementById('plan-progress').style.width = '15%';
+  document.getElementById('plan-pct').textContent = 'Azioni completate: 0 / 15';
+
+  // Live expenses total
+  const liveTotal = state.expenses.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('live-expenses-home').textContent = fmt(liveTotal);
+
+  // Deadlines
+  const dl = TRIP.deadlines
+    .map(d=>({...d, days: daysUntil(d.date)}))
+    .sort((a,b)=>a.days-b.days);
+
+  let html = '';
+  dl.forEach(d => {
+    const color = d.days < 0 ? 'var(--muted)' : d.days < 7 ? 'var(--red)' : d.days < 20 ? 'var(--orange)' : 'var(--green)';
+    const label = d.days < 0 ? 'SCADUTA' : d.days === 0 ? 'OGGI' : `${d.days}g`;
+    html += `<div class="deadline-item">
+      <div class="dl-days"><div class="n" style="color:${color}">${label}</div><div class="g">${d.date.slice(5).replace('-','/')}</div></div>
+      <div class="dl-info"><div class="label">${d.label}</div><div class="note">${d.note}</div></div>
+      ${d.urgent ? '<span class="badge badge-red">URGENTE</span>' : ''}
+    </div>`;
+  });
+  document.getElementById('deadlines-list').innerHTML = html;
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+function renderOverview() {
+  // Stage pills
+  let pillsHtml = '<button class="stage-pill active" style="background:#1B3A6B;color:white" onclick="filterStage(null,this)">Tutto</button>';
+  TRIP.stages.forEach(s => {
+    pillsHtml += `<button class="stage-pill" style="background:${s.bg};color:white" onclick="filterStage('${s.name}',this)">${s.name}</button>`;
+  });
+  document.getElementById('stage-filters').innerHTML = pillsHtml;
+
+  renderTimeline(null);
+}
+
+let activeStageFilter = null;
+function filterStage(name, btn) {
+  activeStageFilter = name;
+  document.querySelectorAll('.stage-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderTimeline(name);
+}
+
+function renderTimeline(filter) {
+  const days = filter ? TRIP.days.filter(d => {
+    const stage = TRIP.stages.find(s => s.name === filter);
+    return stage && stage.days.includes(d.id);
+  }) : TRIP.days;
+
+  let html = '';
+  days.forEach(d => {
+    const typeLabel = d.type==='flight'?'✈️ Volo':d.type==='transfer'?'🚐 Transfer':'🏨 Hotel';
+    const hotel = d.hotel ? d.hotel.name : '';
+    const flights = d.flights.map(f=>`${f.code} ${f.dep}→${f.arr}`).join(' + ');
+    html += `<div class="tl-item">
+      <div class="tl-dot ${d.type}"></div>
+      <div class="tl-card ${d.type}" onclick="goToDay(${d.id})">
+        <div class="tl-date">${d.dayLabel} · ${typeLabel}</div>
+        <div class="tl-stage">${d.stage}</div>
+        <div class="tl-sub">${hotel || flights || ''}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('timeline-list').innerHTML = html;
+}
+
+function goToDay(id) {
+  state.currentDay = id;
+  showPage('day');
+  document.querySelectorAll('.nav-btn')[3].classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{ if(i!==3) b.classList.remove('active'); });
+}
+
+// ── DAY VIEW ─────────────────────────────────────────────────────────────────
+function buildDaySelector() {
+  const sel = document.getElementById('day-selector');
+  sel.innerHTML = TRIP.days.map(d=>`<option value="${d.id}">${d.dayLabel} — ${d.stage}</option>`).join('');
+}
+
+function selectDay(id) { state.currentDay = parseInt(id); renderDay(state.currentDay); }
+function prevDay() { if(state.currentDay > 1) { state.currentDay--; document.getElementById('day-selector').value=state.currentDay; renderDay(state.currentDay); } }
+function nextDay() { if(state.currentDay < TRIP.days.length) { state.currentDay++; document.getElementById('day-selector').value=state.currentDay; renderDay(state.currentDay); } }
+
+function renderDay(id) {
+  document.getElementById('day-selector').value = id;
+  const d = TRIP.days.find(x=>x.id===id);
+  if(!d) return;
+
+  const typeClass = d.type==='flight'?'type-flight':d.type==='transfer'?'type-transfer':'type-hotel';
+  const typeLabel = d.type==='flight'?'✈️ Volo internazionale':d.type==='transfer'?'🚐 Giornata di trasferimento':'🏨 Soggiorno';
+
+  let html = `<div class="day-hero ${typeClass}">
+    <div class="stage">${typeLabel}</div>
+    <h2>${d.dayLabel} — ${d.stage}</h2>
+  </div>`;
+
+  // Notes
+  if(d.notes) {
+    html += `<div class="notes-box">📌 ${d.notes}</div>`;
+  }
+
+  // Hotel
+  if(d.hotel) {
+    const h = d.hotel;
+    html += `<div class="hotel-box ${h.cashOnly?'cash':''}">
+      <div class="hotel-name">${h.name}</div>
+      ${h.breakfast?'<span class="badge badge-green" style="margin-top:4px">🍳 Colazione inclusa</span>':''}
+      ${h.cashOnly?'<span class="badge badge-orange" style="margin-left:4px;margin-top:4px">⚠️ SOLO CONTANTI</span>':''}
+      <div class="hotel-conf" style="margin-top:10px">Confirmation: <strong>${h.conf}</strong></div>
+      <div style="margin-top:4px">PIN: <span class="hotel-pin">${h.pin}</span></div>
+      <div class="hotel-grid">
+        <div class="hotel-item"><div class="k">📞 Tel</div><div class="v"><a href="tel:${h.phone}">${h.phone}</a></div></div>
+        <div class="hotel-item"><div class="k">💳 Pagamento</div><div class="v">${h.payment}</div></div>
+        <div class="hotel-item"><div class="k">⬆️ Check-in</div><div class="v">${h.checkin}</div></div>
+        <div class="hotel-item"><div class="k">⬇️ Check-out</div><div class="v">${h.checkout}</div></div>
+        <div class="hotel-item" style="grid-column:1/-1"><div class="k">📍 Indirizzo</div><div class="v">${h.address}</div></div>
+      </div>
+    </div>`;
+  }
+
+  // Flights
+  d.flights.forEach(f => {
+    const seatWarn = f.seats.includes('⚠️');
+    html += `<div class="flight-row">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="flight-code">${f.code}</div>
+          <div class="flight-route">${f.route}</div>
+        </div>
+        <span class="badge badge-navy">${f.ref}</span>
+      </div>
+      <div class="time-row">
+        <div class="time-dep">${f.dep}</div>
+        <div class="time-arrow">→</div>
+        <div class="time-arr">${f.arr}</div>
+      </div>
+      <div class="flight-meta">
+        <span><strong>Bagaglio:</strong> ${f.baggage}</span>
+        <span style="${seatWarn?'color:var(--red);font-weight:700':''}">${seatWarn?'⚠️ ':''}<strong>Posti:</strong> ${f.seats}</span>
+      </div>
+    </div>`;
+  });
+
+  // Transfers
+  d.transfers.forEach(t => {
+    const crit = t.critical;
+    html += `<div class="transfer-row ${crit?'critical':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div style="font-weight:800;font-size:14px">🚐 ${t.from} → ${t.to}</div>
+        <span class="badge ${crit?'badge-red':'badge-orange'}">${t.status}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${t.how}</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px">
+        <span>⏱ ${t.duration}</span>
+        <span style="font-weight:700;color:var(--green)">💶 ${t.cost}</span>
+        ${t.driver?`<span>👤 ${t.driver}</span>`:''}
+        ${t.phone?`<span>📞 <a href="tel:${t.phone}">${t.phone}</a></span>`:''}
+        ${t.plate?`<span>🚗 ${t.plate}</span>`:''}
+      </div>
+    </div>`;
+  });
+
+  // Activities section
+  const acts = state.activities[id] || [];
+  html += `<div class="section-title">🗺 Attività & Esperienze</div>
+  <div class="card"><div class="card-body">
+    <div id="act-list-${id}">`;
+
+  if(acts.length === 0) {
+    html += `<div class="empty"><div class="icon">🗺</div>Nessuna attività pianificata. Aggiungine una!</div>`;
+  } else {
+    acts.forEach(a => {
+      html += `<div class="activity-item" id="act-${a.id}">
+        <div class="activity-check ${a.done?'done':''}" onclick="toggleActivity(${id},'${a.id}')">
+          ${a.done?'✓':''}
+        </div>
+        <div class="activity-info">
+          <div class="activity-name ${a.done?'done':''}">${a.name}</div>
+          <div class="activity-meta">
+            ${a.note?`<span>${a.note}</span>`:''}
+            ${a.cost?`<span class="activity-cost">💶 ${fmt(a.cost)}</span>`:''}
+            ${a.dayLabel?`<span>📅 ${a.dayLabel}</span>`:''}
+          </div>
+        </div>
+        <button class="activity-del" onclick="deleteActivity(${id},'${a.id}')">✕</button>
+      </div>`;
+    });
+  }
+
+  html += `</div>
+    <div style="margin-top:12px">
+      <button class="btn btn-ghost btn-sm" onclick="toggleAddActivity(${id})">+ Aggiungi attività</button>
+    </div>
+    <div id="add-act-form-${id}" class="add-form collapsible" style="margin-top:10px">
+      <div class="add-form-row">
+        <input id="act-name-${id}" type="text" placeholder="Nome attività..." style="flex:2">
+        <input id="act-cost-${id}" type="number" placeholder="€ costo" step="0.01" min="0" style="flex:0 0 80px">
+      </div>
+      <div class="add-form-row">
+        <input id="act-note-${id}" type="text" placeholder="Note..." style="flex:1">
+        <select id="act-day-${id}" style="flex:0 0 auto">
+          ${TRIP.days.filter(x=>x.id>=id && x.id<=id+2).map(x=>`<option value="${x.id}" data-label="${x.dayLabel}">${x.dayLabel}</option>`).join('')}
+        </select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="addActivity(${id})">Aggiungi</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleAddActivity(${id})">Annulla</button>
+      </div>
+    </div>
+  </div></div>`;
+
+  document.getElementById('day-content').innerHTML = html;
+}
+
+function toggleAddActivity(dayId) {
+  const f = document.getElementById(`add-act-form-${dayId}`);
+  f.classList.toggle('open');
+}
+
+function addActivity(dayId) {
+  const name = document.getElementById(`act-name-${dayId}`).value.trim();
+  if(!name) { toast('Inserisci il nome dell\'attività'); return; }
+  const cost = parseFloat(document.getElementById(`act-cost-${dayId}`).value) || 0;
+  const note = document.getElementById(`act-note-${dayId}`).value.trim();
+  const sel = document.getElementById(`act-day-${dayId}`);
+  const targetDayId = parseInt(sel.value);
+  const dayLabel = sel.options[sel.selectedIndex].dataset.label;
+
+  if(!state.activities[targetDayId]) state.activities[targetDayId] = [];
+  state.activities[targetDayId].push({ id: uid(), name, note, cost, dayLabel, done: false });
+  saveState();
+  renderDay(state.currentDay);
+  toast('Attività aggiunta ✓');
+}
+
+function toggleActivity(dayId, actId) {
+  const acts = state.activities[dayId] || [];
+  const a = acts.find(x=>x.id===actId);
+  if(a) { a.done = !a.done; saveState(); renderDay(state.currentDay); }
+}
+
+function deleteActivity(dayId, actId) {
+  if(!state.activities[dayId]) return;
+  state.activities[dayId] = state.activities[dayId].filter(x=>x.id!==actId);
+  saveState();
+  renderDay(state.currentDay);
+  toast('Attività rimossa');
+}
+
+// ── EXPENSES ─────────────────────────────────────────────────────────────────
+function buildExpenseDaySelector() {
+  const sel = document.getElementById('exp-day');
+  sel.innerHTML = TRIP.days.map(d=>`<option value="${d.id}">${d.dayLabel}</option>`).join('');
+}
+
+function addExpense() {
+  const cat = document.getElementById('exp-cat').value;
+  const desc = document.getElementById('exp-desc').value.trim();
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  const dayId = parseInt(document.getElementById('exp-day').value);
+
+  if(!desc) { toast('Aggiungi una descrizione'); return; }
+  if(!amount || amount <= 0) { toast('Inserisci un importo valido'); return; }
+
+  const day = TRIP.days.find(d=>d.id===dayId);
+  state.expenses.push({ id:uid(), cat, desc, amount, dayId, dayLabel: day?day.dayLabel:'', ts: Date.now() });
+  saveState();
+  document.getElementById('exp-desc').value = '';
+  document.getElementById('exp-amount').value = '';
+  renderExpenses();
+  document.getElementById('live-expenses-home').textContent = fmt(state.expenses.reduce((s,e)=>s+e.amount,0));
+  toast('Spesa aggiunta ✓');
+}
+
+function deleteExpense(id) {
+  state.expenses = state.expenses.filter(e=>e.id!==id);
+  saveState();
+  renderExpenses();
+}
+
+function filterExpenses(cat, btn) {
+  state.expenseFilter = cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderExpenses();
+}
+
+function renderExpenses() {
+  const filtered = state.expenseFilter==='all'
+    ? state.expenses
+    : state.expenses.filter(e=>e.cat===state.expenseFilter);
+
+  const sorted = [...filtered].sort((a,b)=>b.ts-a.ts);
+
+  let html = '';
+  if(sorted.length === 0) {
+    html = '<div class="empty"><div class="icon">💸</div>Nessuna spesa in questa categoria.</div>';
+  } else {
+    sorted.forEach(e => {
+      html += `<div class="expense-item">
+        <div class="expense-cat" style="background:var(--lblue)">${e.cat}</div>
+        <div class="expense-info">
+          <div class="expense-desc">${e.desc}</div>
+          <div class="expense-meta">${e.dayLabel}</div>
+        </div>
+        <div class="expense-amount">${fmt(e.amount)}</div>
+        <button class="expense-del" onclick="deleteExpense('${e.id}')">✕</button>
+      </div>`;
+    });
+  }
+  document.getElementById('expenses-list').innerHTML = html;
+
+  // Summary
+  const catTotals = {};
+  state.expenses.forEach(e => {
+    if(!catTotals[e.cat]) catTotals[e.cat]=0;
+    catTotals[e.cat]+=e.amount;
+  });
+
+  const dayTotals = {};
+  state.expenses.forEach(e => {
+    if(!dayTotals[e.dayLabel]) dayTotals[e.dayLabel]=0;
+    dayTotals[e.dayLabel]+=e.amount;
+  });
+
+  const total = state.expenses.reduce((s,e)=>s+e.amount,0);
+  const actTotal = Object.values(state.activities).flat().reduce((s,a)=>s+(a.done && a.cost?a.cost:0),0);
+
+  let sumHtml = '';
+  Object.entries(catTotals).sort((a,b)=>b[1]-a[1]).forEach(([cat,val])=>{
+    sumHtml += `<div class="total-row"><span>${cat}</span><span>${fmt(val)}</span></div>`;
+  });
+  sumHtml += `<div class="total-row grand"><span>Totale spese di viaggio</span><span>${fmt(total)}</span></div>`;
+  if(actTotal>0) sumHtml += `<div class="total-row" style="color:var(--green)"><span>Attività completate</span><span>${fmt(actTotal)}</span></div>`;
+  sumHtml += `<div class="total-row grand" style="color:var(--navy)"><span>TOTALE COMPLESSIVO (fisso + viaggio)</span><span>${fmt(total+8488.69)}</span></div>`;
+
+  document.getElementById('expenses-summary').innerHTML = sumHtml || '<div class="empty">Aggiungi spese per vedere il riepilogo</div>';
+}
+
+// ── CONTACTS ─────────────────────────────────────────────────────────────────
+function renderContacts() {
+  let html = '';
+  TRIP.contacts.forEach(c => {
+    html += `<div class="contact-item">
+      <div class="contact-icon">${c.icon}</div>
+      <div class="contact-info">
+        <div class="contact-name">${c.name}</div>
+        <div class="contact-phone">${c.display}</div>
+        <div class="contact-ref">${c.ref}${c.note?' · '+c.note:''}</div>
+      </div>
+      <a class="call-btn" href="tel:${c.phone}">📞 Chiama</a>
+    </div>`;
+  });
+  document.getElementById('contacts-list').innerHTML = html;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+loadState();
+buildDaySelector();
+buildExpenseDaySelector();
+renderHome();
+renderContacts();
+</script>
+</body>
+</html>
