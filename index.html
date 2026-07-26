@@ -1,4 +1,4 @@
-OCTYPE html>
+!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -536,18 +536,12 @@ nav{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 8p
 <div class="total-row"><span>Hong Kong — Royal Plaza (5n)</span><span>€ 1.040,00</span></div>
 <div class="total-row grand"><span>Totale accommodation</span><span>€ 2.002,00</span></div>
 </div></div>
-<div class="card"><div class="ch" style="background:var(--navy);color:#fff">🚐 Transfer (stime)</div><div class="cb">
-<div class="total-row"><span>Hanoi → Sa Pa</span><span style="color:var(--muted)">~€ 150</span></div>
-<div class="total-row"><span>Sa Pa → Yên Bái</span><span style="color:var(--muted)">~€ 65</span></div>
-<div class="total-row"><span>Yên Bái → Ninh Bình</span><span style="color:var(--muted)">~€ 75</span></div>
-<div class="total-row"><span>Ninh Bình → Noi Bai</span><span style="color:var(--muted)">~€ 55</span></div>
-<div class="total-row grand"><span>Stima transfer</span><span style="color:var(--muted)">~€ 345</span></div>
-</div></div>
+<div class="card"><div class="ch" style="background:var(--navy);color:#fff">🚐 Transfer</div><div class="cb" id="costs-transfers"></div></div>
 <div class="card"><div class="ch" style="background:var(--navy);color:#fff">📋 Attività Pianificate</div><div class="cb" id="costs-activities"></div></div>
 <div class="card"><div class="ch" style="background:var(--green);color:#fff">💶 TOTALE COMPLESSIVO</div><div class="cb">
 <div class="total-row"><span>Voli</span><span>€ 6.486,69</span></div>
 <div class="total-row"><span>Accommodation</span><span>€ 2.002,00</span></div>
-<div class="total-row"><span>Transfer (stima)</span><span>€ 345,00</span></div>
+<div class="total-row"><span>Transfer</span><span id="costs-tr-total">€ 0,00</span></div>
 <div class="total-row"><span>Attività pianificate</span><span id="costs-act-total">€ 0,00</span></div>
 <div class="total-row"><span>Spese di viaggio</span><span id="costs-live-exp">€ 0,00</span></div>
 <div class="total-row grand"><span>TOTALE FAMIGLIA</span><span id="costs-grand-total">€ 8.833,69</span></div>
@@ -996,11 +990,49 @@ function renderExpenses(){
 }
  
 // ── COSTS ─────────────────────────────────────────────────────────────────────
+function parsePrice(str){
+  // Extract numeric value from strings like "100€", "€145 totale", "110$", "2.500.000 dong"
+  if(!str) return 0;
+  // Remove currency symbols, spaces, dots used as thousands separators
+  const cleaned=str.replace(/[€$£\s]/g,'').replace(/\.(?=\d{3})/g,'').replace(',','.');
+  const num=parseFloat(cleaned);
+  return isNaN(num)?0:num;
+}
+ 
 function renderCosts(){
   const {total:actTotal,byDay}=getAllActivitiesCost();
   const expTotal=ST.exps.reduce((s,e)=>s+e.amount,0);
-  const FIXED=6486.69+2002.00+345.00;
-  const grand=FIXED+actTotal+expTotal;
+  const FIXED=6486.69+2002.00; // voli + accommodation, NO transfer fisso
+ 
+  // Transfer breakdown — usa prezzi reali se disponibili, altrimenti stime
+  const TR_EST={t1:150,t2:65,t3:75,t4:55}; // stime di fallback
+  const TR_LABELS={t1:'Hanoi → Sa Pa',t2:'Sa Pa → Yên Bái',t3:'Yên Bái → Ninh Bình',t4:'Ninh Bình → Noi Bai'};
+  let trTotal=0;
+  let trHtml='';
+  TR_STATIC.forEach(tr=>{
+    const td=ST.trData[tr.id]||{};
+    const hasRealPrice=td.price&&td.price.trim()!=='';
+    const realVal=hasRealPrice?parsePrice(td.price):0;
+    const estVal=TR_EST[tr.id]||0;
+    const displayVal=hasRealPrice?realVal:estVal;
+    trTotal+=displayVal;
+    const label=TR_LABELS[tr.id];
+    const statusIcon=td.status==='booked'?'✅':td.status==='contacted'?'📨':'⚠️';
+    if(hasRealPrice){
+      trHtml+=`<div class="total-row">
+        <span>${statusIcon} ${label}</span>
+        <span style="font-weight:700">${fmt(realVal)}</span>
+      </div>`;
+    } else {
+      trHtml+=`<div class="total-row">
+        <span>${statusIcon} ${label}</span>
+        <span style="color:var(--muted)">~${fmt(estVal)} <span style="font-size:10px">(stima)</span></span>
+      </div>`;
+    }
+  });
+  trHtml+=`<div class="total-row grand"><span>Totale transfer</span><span>${fmt(trTotal)}</span></div>`;
+  document.getElementById('costs-transfers').innerHTML=trHtml;
+  document.getElementById('costs-tr-total').textContent=fmt(trTotal);
  
   // Activities breakdown
   let actHtml='';
@@ -1019,6 +1051,8 @@ function renderCosts(){
   document.getElementById('costs-activities').innerHTML=actHtml;
   document.getElementById('costs-act-total').textContent=fmt(actTotal);
   document.getElementById('costs-live-exp').textContent=fmt(expTotal);
+ 
+  const grand=FIXED+trTotal+actTotal+expTotal;
   document.getElementById('costs-grand-total').textContent=fmt(grand);
 }
  
